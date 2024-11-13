@@ -1,4 +1,7 @@
 node_modules/
 *.env
-.eslintrc.json
-.prettierrc
+.cache/
+config/
+dist
+bundle.js*
+package-lock.json

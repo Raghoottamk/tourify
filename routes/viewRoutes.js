@@ -1,27 +1,20 @@
-const express = require('express');
-const viewsController = require('../controllers/viewsController');
-const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
+import express from "express";
+import * as viewsController from "../controllers/viewsController.js";
+import * as authController from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.get('/', authController.isLoggedIn, viewsController.getOverview);
+router.use(viewsController.alerts);
 
-router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
-router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
-router.get('/me', authController.protect, viewsController.getAccount);
+router.get("/", authController.isLoggedIn, viewsController.getOverview);
 
-router.get(
-  '/my-tours',
-  bookingController.createBookingCheckout,
-  authController.protect,
-  viewsController.getMyTours
-);
+router.get("/tour/:slug", authController.isLoggedIn, viewsController.getTour);
+router.get("/signup", authController.isLoggedIn, viewsController.getSingupForm);
+router.get("/login", authController.isLoggedIn, viewsController.getLoginForm);
+router.get("/me", authController.protect, viewsController.getAccount);
 
-router.post(
-  '/submit-user-data',
-  authController.protect,
-  viewsController.updateUserData
-);
+router.get("/my-tours", authController.protect, viewsController.getMyTours);
 
-module.exports = router;
+router.post("/submit-user-data", authController.protect, viewsController.updateUserData);
+
+export default router;

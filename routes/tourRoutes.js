@@ -1,61 +1,55 @@
-const express = require('express');
-const tourController = require('./../controllers/tourController');
-const authController = require('./../controllers/authController');
-const reviewRouter = require('./../routes/reviewRoutes');
+import express from "express";
+import * as tourController from "./../controllers/tourController.js";
+import { protect, restrictTo } from "./../controllers/authController.js";
+import reviewRouter from "./../routes/reviewRoutes.js";
 
 const router = express.Router();
 
-// router.param('id', tourController.checkID);
+// POST /tour/32434fs35/reviews
+// GET /tour/32434fs35/reviews
+// GET /tour/32434fs35/reviews/97987dssad8
 
-// POST /tour/234fad4/reviews
-// GET /tour/234fad4/reviews
+// router.route('/:tourId/reviews').post(protect, restrictTo('user'), reviewController.createReview);
 
-router.use('/:tourId/reviews', reviewRouter);
+router.use("/:tourId/reviews", reviewRouter);
+
+// router.param('id', checkID);
+
+// Create a checkBody middleware
+// Check if body contains the name and price property
+// If not, send back 400 (bad requst)
+// Add it to the post handler stack
+
+router.route("/top-5-cheap").get(tourController.aliasTopTours, tourController.getAllTours);
+
+router.route("/tour-stats").get(tourController.getTourStats);
+router
+  .route("/monthly-plan/:year")
+  .get(protect, restrictTo("admin", "lead-guide", "guide"), tourController.getMonthlyPlan);
 
 router
-  .route('/top-5-cheap')
-  .get(tourController.aliasTopTours, tourController.getAllTours);
-
-router.route('/tour-stats').get(tourController.getTourStats);
-router
-  .route('/monthly-plan/:year')
-  .get(
-    authController.protect,
-    authController.restrictTo('admin', 'lead-guide', 'guide'),
-    tourController.getMonthlyPlan
-  );
-
-router
-  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .route("/tours-within/:distance/center/:latlng/unit/:unit")
   .get(tourController.getToursWithin);
 // /tours-within?distance=233&center=-40,45&unit=mi
 // /tours-within/233/center/-40,45/unit/mi
 
-router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
+router.route("/distances/:latlng/unit/:unit").get(tourController.getDistances);
 
 router
-  .route('/')
+  .route("/")
   .get(tourController.getAllTours)
-  .post(
-    authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
-    tourController.createTour
-  );
+  .post(protect, restrictTo("admin", "lead-guide"), tourController.createTour);
 
 router
-  .route('/:id')
+  .route("/:id")
   .get(tourController.getTour)
   .patch(
-    authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+    protect,
+    restrictTo("admin", "lead-guide"),
     tourController.uploadTourImages,
     tourController.resizeTourImages,
     tourController.updateTour
   )
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
-    tourController.deleteTour
-  );
+  .delete(protect, restrictTo("admin", "lead-guide"), tourController.deleteTour);
 
-module.exports = router;
+export default router;
