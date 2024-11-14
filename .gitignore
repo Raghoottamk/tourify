@@ -5,3 +5,4 @@ config/
 dist
 bundle.js*
 package-lock.json
+config.js
