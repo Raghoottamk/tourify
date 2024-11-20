@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { STRIPE_PUBLISHABLE_KEY } from "../../config.js";
 
 // Initialize Stripe
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY); // Replace with your actual public key
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 export const bookTour = async tourId => {
   try {
@@ -18,7 +18,7 @@ export const bookTour = async tourId => {
     }
     // 2) Ensure the Stripe object is loaded before using it
     console.log("stripePromise", stripePromise);
-    const stripe = await stripePromise; // Await stripePromise to get the Stripe instance
+    const stripe = await stripePromise;
     if (!stripe) {
       console.error("Stripe failed to initialize.");
       showAlert("error", "Stripe failed to initialize.");
